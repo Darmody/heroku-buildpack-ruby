@@ -100,9 +100,9 @@ WARNING
         install_bundler_in_app
         build_bundler
         post_bundler
+        cp_config
         create_database_yml
         install_binaries
-        run_assets_precompile_rake_task
       end
       best_practice_warnings
       super
@@ -648,7 +648,7 @@ ERROR
   # copy configuration file
   def cp_config
     %w(application database secrets).each do |file_name|
-      system "cp config/#{file_name}.example.yml config/#{file_name}.yml"
+      run("cp config/#{file_name}.example.yml config/#{file_name}.yml")
     end
   end
 
