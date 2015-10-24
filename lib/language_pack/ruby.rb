@@ -569,7 +569,7 @@ WARNING
           # codon since it uses bundler.
           env_vars       = {
             "BUNDLE_GEMFILE"                => "#{pwd}/Gemfile",
-            "BUNDLE_CONFIG"                 => "#{pwd}/.bundle/config",
+            "BUNDLE_CONFIG"                 => "#{pwd}/config/bundle.config",
             "CPATH"                         => noshellescape("#{yaml_include}:$CPATH"),
             "CPPATH"                        => noshellescape("#{yaml_include}:$CPPATH"),
             "LIBRARY_PATH"                  => noshellescape("#{yaml_lib}:$LIBRARY_PATH"),
@@ -577,6 +577,7 @@ WARNING
             "NOKOGIRI_USE_SYSTEM_LIBRARIES" => "true"
           }
           env_vars["BUNDLER_LIB_PATH"] = "#{bundler_path}" if ruby_version.ruby_version == "1.8.7"
+
           puts "Running: #{bundle_command}"
           instrument "ruby.bundle_install" do
             bundle_time = Benchmark.realtime do
@@ -641,6 +642,13 @@ ERROR
       else
         ""
       end
+    end
+  end
+
+  # copy configuration file
+  def cp_config
+    %w(application database secrets).each do |file_name|
+      system "cp config/#{file_name}.example.yml config/#{file_name}.yml"
     end
   end
 
