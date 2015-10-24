@@ -102,6 +102,7 @@ WARNING
         post_bundler
         cp_config
         create_database_yml
+        migrate_db
         install_binaries
       end
       best_practice_warnings
@@ -449,6 +450,25 @@ ERROR
     add_node_js_binary
   end
 
+  # do database migration
+  def migrate_db
+    migration = rake.task("db:migrate")
+
+    topic "Db migrate"
+    migration.invoke(env: rake_env)
+    if migration.success?
+      puts "Db migrate completed (#{"%.2f" % migration.time}s)"
+    else
+      migration_fail(migration.output)
+    end
+  end
+
+  def migration_fail(output)
+    log "migration failed", :status => "failure"
+    msg = "Db migrated failed.\n"
+    error msg
+  end
+
   # vendors binaries into the slug
   def install_binaries
     instrument 'ruby.install_binaries' do
@@ -569,7 +589,7 @@ WARNING
           # codon since it uses bundler.
           env_vars       = {
             "BUNDLE_GEMFILE"                => "#{pwd}/Gemfile",
-            "BUNDLE_CONFIG"                 => "#{pwd}/config/bundle.config",
+            "BUNDLE_CONFIG"                 => "#{pwd}/.bundle/config",
             "CPATH"                         => noshellescape("#{yaml_include}:$CPATH"),
             "CPPATH"                        => noshellescape("#{yaml_include}:$CPPATH"),
             "LIBRARY_PATH"                  => noshellescape("#{yaml_lib}:$LIBRARY_PATH"),
