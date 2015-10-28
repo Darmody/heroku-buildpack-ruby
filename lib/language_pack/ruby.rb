@@ -567,7 +567,7 @@ WARNING
           File.unlink("Gemfile.lock")
         else
           # using --deployment is preferred if we can
-          bundle_command += " --deployment"
+          bundle_command += " --no-deployment"
           cache.load ".bundle"
         end
 
@@ -597,6 +597,10 @@ WARNING
             "NOKOGIRI_USE_SYSTEM_LIBRARIES" => "true"
           }
           env_vars["BUNDLER_LIB_PATH"] = "#{bundler_path}" if ruby_version.ruby_version == "1.8.7"
+
+          puts "Add gems rails_12factor and foreman to app"
+          run("echo 'gem \"rails_12factor\"' >> Gemfile")
+          run("echo 'gem \"foreman\"' >> Gemfile")
 
           puts "Running: #{bundle_command}"
           instrument "ruby.bundle_install" do
