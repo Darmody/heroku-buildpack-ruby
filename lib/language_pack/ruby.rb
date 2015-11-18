@@ -96,6 +96,7 @@ WARNING
       setup_language_pack_environment
       setup_export
       setup_profiled
+      setup_imagemagick
       allow_git do
         install_bundler_in_app
         build_bundler
@@ -290,6 +291,11 @@ SHELL
         set_export_default "JAVA_TOOL_OPTIONS", default_java_tool_options
       end
     end
+  end
+
+  # sets up the imagemagick
+  def setup_imagemagick
+    run("sudo apt-get install -y imagemagick")
   end
 
   # sets up the profile.d script for this buildpack
