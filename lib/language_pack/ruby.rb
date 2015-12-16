@@ -90,7 +90,6 @@ WARNING
       # check for new app at the beginning of the compile
       new_app?
       Dir.chdir(build_path)
-      write_ssh_key
       remove_vendor_bundle
       install_ruby
       install_jvm
@@ -113,15 +112,6 @@ WARNING
   end
 
 private
-
-  def write_ssh_key
-    return unless key = ENV['SSH_KEY']
-    FileUtils.mkdir_p File.expand_path('~/.ssh')
-    File.open(File.expand_path('~/.ssh/id_rsa'), 'w') do |f|
-      f.write key
-      f.chmod(0700)
-    end
-  end
 
   # the base PATH environment variable to be used
   # @return [String] the resulting PATH
